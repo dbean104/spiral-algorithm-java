@@ -18,7 +18,7 @@ public class Windup {
 	 * @return
 	 */
 	public static int windup(boolean[] spiral, int m, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacenyMatrix) {
-		if (dualAdjacenyMatrix.length != m | dualAdjacenyMatrix[0].length != m)
+		if (dualAdjacenyMatrix.length != m || dualAdjacenyMatrix[0].length != m)
 			throw new IllegalStateException("Adjancency matrix must have dimensions equal to nuclearity");
 		final int[][] afi = new int[spiral.length][6]; // adjacent faces identifier 
 		final int[] afc = new int[spiral.length]; // adjacent faces counter
