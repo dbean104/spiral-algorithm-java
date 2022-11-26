@@ -1,24 +1,46 @@
 package com.dbean104.spiral.impl;
 
+/**
+ * Class containing utility methods and constants
+ * @author david
+ *
+ */
 public class GraphUtils {
+	
+	public static final int HEXAGON_EDGES = 6;
+	public static final int PENTAGON_EDGES = 5;
+	
+	public static final int MIN_FULLERENE_SIZE = 20;
+	public static final int PENTAGON_COUNT = 12;
 
 	private GraphUtils() { /* Avoid instantiation */ }
 	
 	/**
 	 * Returns 1 if boolean is true
-	 * @param isPent
-	 * @return
+	 * @param isPentagon
+	 * @return <code>1</code> if the supplied boolean is <code>true</code>, and <code>0</code> otherwise
 	 */
-	public static int pentTo1(boolean isPent) {
-		return isPent ? 1 : 0;
+	public static int pentTo1(boolean isPentagon) {
+		return isPentagon ? 1 : 0;
 	}
 	
 	/**
 	 * Returns 5 if true (a pentagon) and 6 if false (a hexagon)
-	 * @param b
+	 * @param isPentagon
 	 * @return
 	 */
-	public static int boolToHexOrPent(boolean b) {
-		return b ? 5 : 6;
+	public static int boolToHexOrPent(boolean isPentagon) {
+		return isPentagon ? PENTAGON_EDGES : HEXAGON_EDGES;
+	}
+	
+	/**
+	 * Applies Euler's theorem to get faces for a fullerene with a given number of atoms
+	 * @param atoms the number of atoms
+	 * @return the number of faces
+	 */
+	public static int getFaceCount(int atoms) {
+		if (atoms < MIN_FULLERENE_SIZE || atoms % 2 == 1)
+			throw new IllegalArgumentException("A fullerene must have > " + MIN_FULLERENE_SIZE + " atoms and and even number of atoms");
+		return PENTAGON_COUNT + (atoms / 2) - 10;
 	}
 }

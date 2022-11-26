@@ -1,5 +1,6 @@
 package com.dbean104.spiral.impl;
 
+import static com.dbean104.spiral.impl.GraphUtils.PENTAGON_COUNT;
 import static com.dbean104.spiral.impl.GraphUtils.boolToHexOrPent;
 import static com.dbean104.spiral.impl.GraphUtils.pentTo1;
 
@@ -12,15 +13,21 @@ public class Windup {
 	 * 
 	 * Otherwise returns 0.
 	 * 
-	 * @param spiral
+	 * @param spiral A <code>boolean</code> array representing the test fullerene. The values should be <code>true</code> to represent pentagons,
+	 * 		and <code>false</code> to represent hexagons at each index.
 	 * @param m
 	 * @param isolatedPentagonIsomersOnly
+	 * @param dualAdjacencyMatrix an adjacency matrix which will be populated if the fullerene provided is valid
 	 * @return
 	 */
-	public static int windup(boolean[] spiral, int m, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacenyMatrix) {
-		if (dualAdjacenyMatrix.length != m || dualAdjacenyMatrix[0].length != m)
-			throw new IllegalStateException("Adjancency matrix must have dimensions equal to nuclearity");
-		final int[][] afi = new int[spiral.length][6]; // adjacent faces identifier 
+	public static int windup(boolean[] spiral, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacencyMatrix) {
+		final int m = spiral.length; // the number of faces in the fullerene
+		if (dualAdjacencyMatrix.length != m || dualAdjacencyMatrix[0].length != m)
+			throw new IllegalStateException("Adjacency matrix must have dimensions equal to nuclearity");
+		final int[][] afi = new int[spiral.length][]; // adjacent faces identifier
+		for (int i = 0; i < spiral.length; i++) {
+			afi[i] = new int[boolToHexOrPent(spiral[i])];
+		}
 		final int[] afc = new int[spiral.length]; // adjacent faces counter
 		int j = 0;
 		// associate the first two faces with each other
@@ -86,9 +93,8 @@ public class Windup {
 			if (f > m-face)
 				return p;
 		}
-		assert(!spiral[m-1] && p==12 || spiral[m-1] && p==11);
-		p = 12;
-		afc[m-1] = 1;
+		assert(!spiral[m-1] && p == PENTAGON_COUNT || spiral[m-1] && p == PENTAGON_COUNT - 1);
+		p = PENTAGON_COUNT;
 		for (int face = j; face < m; face++) {
 			if (needsMoreThanOneMoreNeighbour(face, spiral, afc)) {
 				return p;
@@ -110,15 +116,13 @@ public class Windup {
 		if (needsMoreNeighbours(m-1, spiral, afc)) {
 			return p;
 		}
-		// all good, so return value will now be zero
+		// fullerene is now known to be a valid spiral, so we populate the adjacency matrix
 		for (int i = 0; i < m; i++) {
-			for (int n  = 0; n < boolToHexOrPent(spiral[i]); n++) {
-				dualAdjacenyMatrix[i][afi[i][n]] = true;
+			for (int n = 0; n < boolToHexOrPent(spiral[i]); n++) {
+				dualAdjacencyMatrix[i][afi[i][n]] = true;
 			}
 		}
-		
 		return 0;
-		
 	}
 	
 	private static boolean violatesAdjPents(boolean ipr, boolean[] spiral, int prevFace, int face) {
