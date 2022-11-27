@@ -44,7 +44,8 @@ public class Windup {
 			int prevFace = face-1;
 			boolean connectedPreviousFaces = false;
 			prevFace: while (!connectedPreviousFaces) {
-				if (violatesAdjPents(isolatedPentagonIsomersOnly, spiral, prevFace, face) || hasAllNeighbours(face, spiral, afc)) {
+				if (violatesAdjPents(isolatedPentagonIsomersOnly, spiral, prevFace, face) ||
+						hasAllNeighbours(prevFace, spiral, afc) || hasAllNeighbours(face, spiral, afc)) {
 					return p;
 				}
 				afi[prevFace][afc[prevFace]] = face;
@@ -65,10 +66,10 @@ public class Windup {
 			}
 			boolean connectedPreviousSpiral = false;
 			findSpiralStart: while (!connectedPreviousSpiral) {
-				if (violatesAdjPents(isolatedPentagonIsomersOnly, spiral, prevFace, face) && hasAllNeighbours(face, spiral, afc)) {
+				if (violatesAdjPents(isolatedPentagonIsomersOnly, spiral, prevFace, face) || hasAllNeighbours(face, spiral, afc)) {
 					return p;
 				}
-				// connect face to the first open face j in the preceding spiral
+
 				afi[j][afc[j]] = face;
 				afi[face][afc[face]] = j;
 				afc[j]++;

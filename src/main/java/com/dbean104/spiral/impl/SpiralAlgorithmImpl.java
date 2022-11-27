@@ -24,17 +24,16 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 
 	@Override
 	public void generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly) {
-		if (nuclearity % 2 != 0)
-			throw new IllegalArgumentException("Nuclearity must be an even number");
+		GraphUtils.verifyNuclearity(nuclearity);
 		if (nuclearity > 194)
 			throw new IllegalArgumentException("Nuclearity must be less than 194");
 		LOGGER.info("Running with nuclearity={} and isolatedPentagonOnly={}",nuclearity,isolatedPentagonIsomersOnly);
 		
 		int l = 0;
-		int m = nuclearity/2 +2;
+		int totalFaces = nuclearity/2 + 2;
 		final int jpr = isolatedPentagonIsomersOnly ? 2 : 1;
 		
-		addPentagon(new int[12], 0, 0, jpr, m);
+		addPentagon(new int[12], 0, 0, jpr, totalFaces);
 	/*	
 		level1: for (int j1 = 0; j1 < m-11*jpr; j1++) {
 			level2: for (int j2 = j1+jpr; j2 < m-10*jpr; j2++) {
@@ -78,34 +77,31 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 */
 	}
 	
-	private int addPentagon(int[] pentagonPositions, int pentagon, int face, int jpr, int m) {
+	private int addPentagon(int[] pentagonPositions, int pentagon, int face, int jpr, int totalFaces) {
 		if (pentagon == 12) {
 			// call windup
-			final boolean[] s = new boolean[m];
+			final boolean[] s = new boolean[totalFaces];
 			for (int i : pentagonPositions) {
 				s[i] = true;
 			}
 			// call windup
-			boolean[][] adjacencyMatrix = new boolean[m][m];
-			try {
-				int windup = windup(s, jpr == 2, adjacencyMatrix);
-				if (windup == 0) {
-					System.out.println("Found one!" + Arrays.toString(s)); // TODO : Do something
-				}
-			} catch (Exception e) {
-				LOGGER.error("Error winding up spiral :" + Arrays.toString(s), e);
+			boolean[][] adjacencyMatrix = new boolean[totalFaces][totalFaces];
+			int windup = windup(s, jpr == 2, adjacencyMatrix);
+			if (windup == 0) {
+				System.out.println("Found one!" + Arrays.toString(s)); // TODO : Do something
+				return 11; // loop round again looking for more
+			} else {
+				return windup - 1;
 			}
-			
-			return 11; // loop around again
 		} else {
 			int stuckPentagon = pentagon;
 			int j = face;
 			pentagonPositions[pentagon] = j;
-			while (stuckPentagon==pentagon && j < m-(11-pentagon)*jpr) {
-				stuckPentagon = addPentagon(pentagonPositions, pentagon+1, j+jpr, jpr, m);
+			while (stuckPentagon==pentagon && j < totalFaces-(11-pentagon)*jpr) {
+				stuckPentagon = addPentagon(pentagonPositions, pentagon+1, j+jpr, jpr, totalFaces);
 				pentagonPositions[pentagon] = ++j;
 			}
-			return stuckPentagon;
+			return pentagon - 1;
 		}
 		
 	}

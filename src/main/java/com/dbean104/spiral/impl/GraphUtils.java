@@ -39,8 +39,17 @@ public class GraphUtils {
 	 * @return the number of faces
 	 */
 	public static int getFaceCount(int atoms) {
-		if (atoms < MIN_FULLERENE_SIZE || atoms % 2 == 1)
-			throw new IllegalArgumentException("A fullerene must have > " + MIN_FULLERENE_SIZE + " atoms and and even number of atoms");
+		verifyNuclearity(atoms);
 		return PENTAGON_COUNT + (atoms / 2) - 10;
+	}
+	
+	/**
+	 * Verifies the nuclearity of a fullerene is valid
+	 * @param nuclearity the nuclearity (number of carbon atoms)
+	 * @throws IllegalArgumentException if validity checks fail
+	 */
+	public static void verifyNuclearity(int nuclearity) {
+		if (nuclearity < MIN_FULLERENE_SIZE || nuclearity % 2 == 1)
+			throw new IllegalArgumentException("A fullerene must have > " + MIN_FULLERENE_SIZE + " atoms and and even number of atoms");
 	}
 }
