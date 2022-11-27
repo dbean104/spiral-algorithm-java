@@ -88,7 +88,9 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 			boolean[][] adjacencyMatrix = new boolean[totalFaces][totalFaces];
 			int windup = windup(s, jpr == 2, adjacencyMatrix);
 			if (windup == 0) {
-				System.out.println("Found one!" + Arrays.toString(s)); // TODO : Do something
+				int unwind = Unwind.unwind(s, adjacencyMatrix);
+				if (unwind != 13)
+					System.out.println("Found one!" + Arrays.toString(s)); // TODO : Do something
 				return 11; // loop round again looking for more
 			} else {
 				return windup - 1;

@@ -18,9 +18,9 @@ public class SpiralAlgorithmImplTest {
 		spa.generateIsomers(24, false);
 	}
 	
-	@Test
+/*	@Test
 	public void testIcosohedralC60() {
 		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
 		spa.generateIsomers(60, true);
-	}
+	}*/
 }
