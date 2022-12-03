@@ -1,5 +1,7 @@
 package com.dbean104.spiral.impl;
 
+import static com.dbean104.spiral.impl.TestUtils.indexFrom1ArrayToSpiral;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,13 +45,6 @@ public class WindupTest {
 		final boolean isIsolatedPentagons = true;
 		final int result = Windup.windup(spiral, isIsolatedPentagons, new boolean[spiral.length][spiral.length]);
 		Assert.assertEquals(0, result);
-	}
-	
-	private boolean[] indexFrom1ArrayToSpiral(int[] array, int m) {
-		boolean[] spiral = new boolean[m];
-		for (int i : array)
-			spiral[i-1] = true;
-		return spiral;
 	}
 	
 	private void testAdjacencyMatrixRow(int rowNumber, boolean[] row, int[] expectedMatches) {
