@@ -10,14 +10,16 @@ public class Unwind {
 		if (dualAdjacencyMatrix.length != totalFaces && dualAdjacencyMatrix[0].length != totalFaces) {
 			throw new IllegalArgumentException("Inconsistent dimensions between spiral and adjacency matrix");
 		}
-		BiFunction<Integer, Integer, Boolean> adj = (i1, i2) -> dualAdjacencyMatrix[i1][i2];
-		int[][] fp = new int[totalFaces][120];
-		int s0 = 0;
+		final BiFunction<Integer, Integer, Boolean> adj = (i1, i2) -> dualAdjacencyMatrix[i1][i2];
+		final int[][] fp = new int[totalFaces][120];
+		int s0 = -1;
+		/*
 		for (int i = 0; i < totalFaces; i++) {
 			fp[i][s0] = i;
 		}
-		int[] p = new int[totalFaces];
-		int[] r = new int[totalFaces];
+		*/
+		final int[] p = new int[totalFaces];
+		final int[] r = new int[totalFaces];
 		level10: for (int if1 = 0; if1 < totalFaces; if1++) {
 			p[0] = if1;
 			int flag1 = 0;
@@ -43,7 +45,7 @@ public class Unwind {
 					if (!adj.apply(if1,if3) || !adj.apply(if2,if3)) {
 						continue level8;
 					}
-					/*
+					
 					if (s0 == -1) {
 						s0 = 0;
 						for (int i = 0; i < totalFaces; i++) {
@@ -51,7 +53,7 @@ public class Unwind {
 						}
 						continue level8;
 					}
-					*/
+					
 					p[2] = if3;
 					int flag3 = flag2;
 					if (flag3 == 0 && spiral[p[2]] != spiral[2]) {
@@ -74,7 +76,7 @@ public class Unwind {
 						int firstOpenFace = p[i];
 						int lastOpenFace = p[j-2];
 						level5: for (int ij = 0; ij < totalFaces; ij++) {
-							if (!!adj.apply(ij, firstOpenFace) || !adj.apply(ij,lastOpenFace)
+							if (!adj.apply(ij, firstOpenFace) || !adj.apply(ij,lastOpenFace)
 									|| r[ij] > 0) {
 								continue level5;
 							}
@@ -106,7 +108,7 @@ public class Unwind {
 				}
 			}
 		}
-		
+		System.out.println("Spiral found! " + Arrays.toString(spiral) + " Point group order = " + s0);
 		return 0;
 	}
 }
