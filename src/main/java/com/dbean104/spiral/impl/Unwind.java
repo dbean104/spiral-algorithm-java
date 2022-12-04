@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 
 public class Unwind {
 
-	public static int unwind(boolean[] spiral, boolean[][] dualAdjacencyMatrix) {
+	public static UnwindResult unwind(boolean[] spiral, boolean[][] dualAdjacencyMatrix) {
 		int totalFaces = spiral.length;
 		if (dualAdjacencyMatrix.length != totalFaces && dualAdjacencyMatrix[0].length != totalFaces) {
 			throw new IllegalArgumentException("Inconsistent dimensions between spiral and adjacency matrix");
@@ -13,11 +13,7 @@ public class Unwind {
 		final BiFunction<Integer, Integer, Boolean> adj = (i1, i2) -> dualAdjacencyMatrix[i1][i2];
 		final int[][] fp = new int[totalFaces][120];
 		int s0 = -1;
-		/*
-		for (int i = 0; i < totalFaces; i++) {
-			fp[i][s0] = i;
-		}
-		*/
+
 		final int[] p = new int[totalFaces];
 		final int[] r = new int[totalFaces];
 		level10: for (int if1 = 0; if1 < totalFaces; if1++) {
@@ -67,20 +63,20 @@ public class Unwind {
 					r[p[1]] = 2;
 					r[p[2]] = 2;
 					int i = 0;
-					level6: for (int j = 3; j < totalFaces; j++) {
+					for (int j = 3; j < totalFaces; j++) {
 						while (r[p[i]] == GraphUtils.boolToHexOrPent(spiral[p[i]])) {
 							i++;
 							if (i == j-2)
 								continue level8;
 						}
 						int firstOpenFace = p[i];
-						int lastOpenFace = p[j-2];
+						int lastOpenFace = p[j-1];
 						level5: for (int ij = 0; ij < totalFaces; ij++) {
 							if (!adj.apply(ij, firstOpenFace) || !adj.apply(ij,lastOpenFace)
 									|| r[ij] > 0) {
 								continue level5;
 							}
-							p[j] = r[ij];
+							p[j] = ij;
 							if (flag3 == 0 && spiral[p[j]] != spiral[j]) {
 								if (!spiral[p[j]]) {
 									continue level8;
@@ -88,14 +84,12 @@ public class Unwind {
 								flag3 = j;
 							}
 							for (int k = 0; k < j-2; k++) {
-								if (dualAdjacencyMatrix[p[j]][p[k]]) {
+								if (adj.apply(p[j],p[k])) {
 									r[p[j]]++;
 									r[p[k]]++;
 								}
 							}
-							continue level6;
 						}
-						continue level8;
 					}
 					if (flag3 == 0) {
 						s0++;
@@ -103,12 +97,13 @@ public class Unwind {
 							fp[k][s0] = p[k];
 						}
 					} else {
-						return 13;
+						return null;
 					}
 				}
 			}
 		}
-		System.out.println("Spiral found! " + Arrays.toString(spiral) + " Point group order = " + s0);
-		return 0;
+		final int order = s0 + 1;
+		// TODO : Determine point group and NMR
+		return new UnwindResult(order);
 	}
 }

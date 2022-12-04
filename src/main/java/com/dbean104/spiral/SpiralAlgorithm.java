@@ -1,5 +1,7 @@
 package com.dbean104.spiral;
 
+import java.util.SortedSet;
+
 /**
  * Main interface for calling the the spiral algorithm
  * @author david
@@ -14,6 +16,6 @@ public interface SpiralAlgorithm {
 	 * @param isolatedPentagonIsomersOnly true if only fullerenes with isolated pentagons are require
 	 * TODO : Determine return type
 	 */
-	void generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly);
+	SortedSet<FullereneIsomer> generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly);
 
 }

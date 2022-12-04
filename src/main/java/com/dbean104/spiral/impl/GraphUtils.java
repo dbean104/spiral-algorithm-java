@@ -44,6 +44,17 @@ public class GraphUtils {
 	}
 	
 	/**
+	 * Applies Euler's theorem to get the nuclearity of a fullerence with a given number of faces
+	 * @param faceCount the number of faces
+	 * @return the nuclearity
+	 */
+	public static int getNuclearity(int faceCount) {
+		if (faceCount < PENTAGON_COUNT)
+			throw new IllegalArgumentException("A fullerence must have > " + PENTAGON_COUNT + " faces"); 
+		return 2 * faceCount - 4;
+	}
+	
+	/**
 	 * Verifies the nuclearity of a fullerene is valid
 	 * @param nuclearity the nuclearity (number of carbon atoms)
 	 * @throws IllegalArgumentException if validity checks fail

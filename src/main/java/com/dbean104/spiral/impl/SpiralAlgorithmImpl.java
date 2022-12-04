@@ -1,15 +1,16 @@
 package com.dbean104.spiral.impl;
 
-
-import static com.dbean104.spiral.impl.GraphUtils.boolToHexOrPent;
-import static com.dbean104.spiral.impl.GraphUtils.pentTo1;
+import static com.dbean104.spiral.impl.GraphUtils.getNuclearity;
 import static com.dbean104.spiral.impl.Windup.windup;
 
 import java.util.Arrays;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.dbean104.spiral.FullereneIsomer;
 import com.dbean104.spiral.SpiralAlgorithm;
 
 /**
@@ -23,17 +24,19 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 	
 
 	@Override
-	public void generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly) {
+	public SortedSet<FullereneIsomer> generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly) {
 		GraphUtils.verifyNuclearity(nuclearity);
 		if (nuclearity > 194)
 			throw new IllegalArgumentException("Nuclearity must be less than 194");
 		LOGGER.info("Running with nuclearity={} and isolatedPentagonOnly={}",nuclearity,isolatedPentagonIsomersOnly);
 		
+		final SortedSet<FullereneIsomer> result = new TreeSet<>();
+		
 		int l = 0;
 		int totalFaces = nuclearity/2 + 2;
 		final int jpr = isolatedPentagonIsomersOnly ? 2 : 1;
 		
-		addPentagon(new int[12], 0, 0, jpr, totalFaces);
+		addPentagon(new int[12], 0, 0, jpr, totalFaces, result);
 	/*	
 		level1: for (int j1 = 0; j1 < m-11*jpr; j1++) {
 			level2: for (int j2 = j1+jpr; j2 < m-10*jpr; j2++) {
@@ -75,9 +78,10 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 		}
 		System.out.println("Found " + l + " isomers");
 */
+		return result;
 	}
 	
-	private int addPentagon(int[] pentagonPositions, int pentagon, int face, int jpr, int totalFaces) {
+	private int addPentagon(int[] pentagonPositions, int pentagon, int face, int jpr, int totalFaces, SortedSet<FullereneIsomer> found) {
 		if (pentagon == 12) {
 			// call windup
 			final boolean[] s = new boolean[totalFaces];
@@ -88,9 +92,11 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 			boolean[][] adjacencyMatrix = new boolean[totalFaces][totalFaces];
 			int windup = windup(s, jpr == 2, adjacencyMatrix);
 			if (windup == 0) {
-				int unwind = Unwind.unwind(s, adjacencyMatrix);
-				if (unwind != 13)
-					System.out.println("Found one!" + Arrays.toString(s)); // TODO : Do something
+				final UnwindResult unwind = Unwind.unwind(s, adjacencyMatrix);
+				if (unwind != null) {
+					int[] pentagonPositionsCopy = Arrays.copyOf(pentagonPositions, pentagonPositions.length);
+					found.add(new FullereneIsomerImpl(getNuclearity(totalFaces), pentagonPositionsCopy, unwind.getPointGroupOrder()));
+				}
 				return 11; // loop round again looking for more
 			} else {
 				return windup - 1;
@@ -100,7 +106,7 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 			int j = face;
 			pentagonPositions[pentagon] = j;
 			while (stuckPentagon==pentagon && j < totalFaces-(11-pentagon)*jpr) {
-				stuckPentagon = addPentagon(pentagonPositions, pentagon+1, j+jpr, jpr, totalFaces);
+				stuckPentagon = addPentagon(pentagonPositions, pentagon+1, j+jpr, jpr, totalFaces, found);
 				pentagonPositions[pentagon] = ++j;
 			}
 			return pentagon - 1;
