@@ -11,4 +11,9 @@ public class UnwindResult {
 	int getPointGroupOrder() {
 		return pointGroupOrder;
 	}
+
+	@Override
+	public String toString() {
+		return "UnwindResult [pointGroupOrder=" + pointGroupOrder + "]";
+	}
 }

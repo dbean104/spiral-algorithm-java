@@ -21,6 +21,12 @@ public class UnwindTest {
 	}
 	
 	@Test
+	public void testUnwind() {
+		final int[] pentagonPositions = new int[] {1,2,3,4,7,10,12,13,15,16,17,18};
+		testUnwind(pentagonPositions, 32, false, -1);
+	}
+	
+	@Test
 	public void testUnwindWithNotLowestC24Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,6,7,9,10,11,12,13,14};
 		testUnwind(pentagonPositions, 24, false, -1);
