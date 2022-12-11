@@ -157,7 +157,7 @@ public class Unwind {
 					}
 				}
 				k = order / k;
-				mv[k] = mv[k]+1;
+				mv[k-1]++;
 			}
 		}
 		for (int j = 0; j < n; j++) {
@@ -175,12 +175,45 @@ public class Unwind {
 					}
 				}
 				k = order / k;
-				me[k] = me[k] + 1;
+				me[k-1]++;
 			}
 		}
-		
-		
-		return new UnwindResult(order);
+		for (int j = 0; j < l; j++) {
+			edgePermutations[0][j] = j;
+		}
+		for (int j = 0; j < totalFaces; j++) {
+			if (fp[j][0] != 0) {
+				fp[j][0] = 0;
+				int k = 1;
+				for (int orderIdx = 1; orderIdx < order; orderIdx++ ) {
+					int i = fp[j][orderIdx];
+					if (fp[i][0] != 0) {
+						fp[i][0] = 0;
+						k++;
+					}
+				}
+				k = order / k;
+				mf[k-1]++;
+			}
+		}
+		for (int j = 0; j < totalFaces; j++) {
+			fp[0][j] = 0;
+		}
+		for (int k = 0; k < 12; k++) {
+			ms[k] = mv[k] + me[k] + mf[k];
+		}
+		int[] nmr = new int[6];
+		int j = 0;
+		for (int k = nmr.length - 1; k >= 0; k--) {
+			if (mv[k] != 0) {
+				nmr[j] = mv[k];
+				j++;
+				nmr[j] = order / (k+1);
+				j++;
+			}
+		}
+		String group = PointGroup.getGroup(order, ms);
+		return new UnwindResult(group);
 	}
 	
 	private static void updateSymmetry(int[][] fp, int s0, int[] updateArray) {
@@ -188,4 +221,6 @@ public class Unwind {
 			fp[i][s0-1] = updateArray != null ? updateArray[i] : i;
 		}
 	}
+	
+
 }

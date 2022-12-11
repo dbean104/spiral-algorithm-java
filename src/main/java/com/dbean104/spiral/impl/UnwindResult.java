@@ -2,18 +2,18 @@ package com.dbean104.spiral.impl;
 
 public class UnwindResult {
 
-	private final int pointGroupOrder;
+	private final String pointGroup;
 	
-	UnwindResult(int pointGroupOrder) {
-		this.pointGroupOrder = pointGroupOrder;
+	UnwindResult(String pointGroup) {
+		this.pointGroup = pointGroup;
 	}
 	
-	int getPointGroupOrder() {
-		return pointGroupOrder;
+	String getPointGroup() {
+		return pointGroup;
 	}
 
 	@Override
 	public String toString() {
-		return "UnwindResult [pointGroupOrder=" + pointGroupOrder + "]";
+		return "UnwindResult [pointGroup=" + pointGroup + "]";
 	}
 }

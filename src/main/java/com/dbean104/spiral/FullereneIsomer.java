@@ -7,6 +7,6 @@ public interface FullereneIsomer extends Comparable<FullereneIsomer> {
 
 	int[] getRingSpiral();
 
-	int getPointGroupOrder();
+	String getPointGroup();
 	
 }

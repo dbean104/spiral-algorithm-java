@@ -11,28 +11,28 @@ public class UnwindTest {
 	@Test
 	public void testUnwindWithMostBasic() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,5,6,7,8,9,10,11,12};
-		testUnwind(pentagonPositions, 20, false, 120);
+		testUnwind(pentagonPositions, 20, false, "Ih");
 	}
 	
 	@Test
 	public void testUnwindWithLowestC24Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,5,7,8,10,11,12,13,14};
-		testUnwind(pentagonPositions, 24, false, 24);
+		testUnwind(pentagonPositions, 24, false, "D6d");
 	}
 	
 	@Test
 	public void testUnwind() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,7,10,12,13,15,16,17,18};
-		testUnwind(pentagonPositions, 32, false, -1);
+		testUnwind(pentagonPositions, 32, false, null);
 	}
 	
 	@Test
 	public void testUnwindWithNotLowestC24Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,6,7,9,10,11,12,13,14};
-		testUnwind(pentagonPositions, 24, false, -1);
+		testUnwind(pentagonPositions, 24, false, null);
 	}
 	
-	private static void testUnwind(int[] pentagonPositions, int nuclearity, boolean isIsolatedPentagons, int expectedPointGroupOrder) {
+	private static void testUnwind(int[] pentagonPositions, int nuclearity, boolean isIsolatedPentagons, String expectedPointGroup) {
 		boolean[] spiral = indexFrom1ArrayToSpiral(pentagonPositions, GraphUtils.getFaceCount(nuclearity));
 		// call windup to get the dual adjacency matrix first and assert that the test has been configured with a valid fullerence
 		final boolean[][] dualAdjacencyMatrix = new boolean[spiral.length][spiral.length];
@@ -41,11 +41,11 @@ public class UnwindTest {
 		
 		
 		final UnwindResult unwindResult = Unwind.unwind(spiral, dualAdjacencyMatrix);
-		if (expectedPointGroupOrder == -1) {
+		if (expectedPointGroup == null) {
 			Assert.assertNull(unwindResult);
 		} else {
 			Assert.assertNotNull(unwindResult);
-			Assert.assertEquals(expectedPointGroupOrder, unwindResult.getPointGroupOrder());			
+			Assert.assertEquals(expectedPointGroup, unwindResult.getPointGroup());			
 		}
 	}
 }

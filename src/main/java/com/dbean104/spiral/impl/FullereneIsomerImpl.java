@@ -6,12 +6,12 @@ public class FullereneIsomerImpl implements FullereneIsomer {
 
 	private final int nuclearity;
 	private final int[] ringSpiral;
-	private final int pointGroupOrder;
+	private final String pointGroup;
 	
-	public FullereneIsomerImpl(int nuclearity, int[] ringSpiral, int pointGroupOrder) {
+	public FullereneIsomerImpl(int nuclearity, int[] ringSpiral, String pointGroup) {
 		this.nuclearity = nuclearity;
 		this.ringSpiral = ringSpiral;
-		this.pointGroupOrder = pointGroupOrder;
+		this.pointGroup = pointGroup;
 	}
 
 	public int getNuclearity() {
@@ -22,8 +22,8 @@ public class FullereneIsomerImpl implements FullereneIsomer {
 		return ringSpiral;
 	}
 
-	public int getPointGroupOrder() {
-		return pointGroupOrder;
+	public String getPointGroup() {
+		return pointGroup;
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package com.dbean104.spiral.output;
 
-import java.util.Arrays;
 import java.util.SortedSet;
 
 import com.dbean104.spiral.FullereneIsomer;
@@ -18,7 +17,7 @@ public class OutputUtils {
 	}
 	
 	private static void dumpFullereneResult(int nuclearity, int isomerNumber, FullereneIsomer isomer) {
-		final String output = String.format(OUTPUT_TEMPLATE, String.format("%d:%d", nuclearity, isomerNumber), formatRingSpiral(isomer.getRingSpiral()), Integer.toString(isomer.getPointGroupOrder()));
+		final String output = String.format(OUTPUT_TEMPLATE, String.format("%d:%d", nuclearity, isomerNumber), formatRingSpiral(isomer.getRingSpiral()), isomer.getPointGroup());
 		System.out.println(output);
 	}
 	

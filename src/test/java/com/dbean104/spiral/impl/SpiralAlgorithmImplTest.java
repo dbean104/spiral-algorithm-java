@@ -13,16 +13,20 @@ public class SpiralAlgorithmImplTest {
 
 	@Test
 	public void testMostBasic() {
+		final int nuclearity = 20;
 		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(20, false);
+		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, false);
 		Assert.assertEquals(1, isomers.size());
+		OutputUtils.dumpResult(nuclearity, isomers);
 	}
 	
 	@Test
 	public void testNonTrivial() {
+		final int nuclearity = 24;
 		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(24, false);
+		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, false);
 		Assert.assertEquals(1, isomers.size());
+		OutputUtils.dumpResult(nuclearity, isomers);
 	}
 	
 	@Test
@@ -36,9 +40,11 @@ public class SpiralAlgorithmImplTest {
 	
 	@Test
 	public void testIcosohedralC60() {
+		final int nuclearity = 60;
 		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(60, true);
+		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, true);
 		Assert.assertEquals(1, isomers.size());
+		OutputUtils.dumpResult(nuclearity, isomers);
 	}
 	
 	

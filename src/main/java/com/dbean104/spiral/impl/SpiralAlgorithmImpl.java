@@ -95,7 +95,7 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 				final UnwindResult unwind = Unwind.unwind(s, adjacencyMatrix);
 				if (unwind != null) {
 					int[] pentagonPositionsCopy = Arrays.copyOf(pentagonPositions, pentagonPositions.length);
-					found.add(new FullereneIsomerImpl(getNuclearity(totalFaces), pentagonPositionsCopy, unwind.getPointGroupOrder()));
+					found.add(new FullereneIsomerImpl(getNuclearity(totalFaces), pentagonPositionsCopy, unwind.getPointGroup()));
 				}
 				return 11; // loop round again looking for more
 			} else {
