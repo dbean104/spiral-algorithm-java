@@ -24,6 +24,8 @@ public class OutputUtils {
 	private static String formatRingSpiral(int[] s) {
 		final StringBuilder sb = new StringBuilder();
 		for (int i : s) {
+			if (i < 9)
+				sb.append(" ");
 			sb.append(i + 1).append(" ");
 		}
 		return sb.toString();
