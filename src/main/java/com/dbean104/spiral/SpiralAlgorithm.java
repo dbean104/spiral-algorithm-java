@@ -8,14 +8,16 @@ import java.util.SortedSet;
  *
  */
 public interface SpiralAlgorithm {
-	// TODO : Add methods
 	
 	/**
 	 * Generates all fullerene isomers for the required nuclearity
+	 * 
 	 * @param nuclearity an even number less than or equal to 194
-	 * @param isolatedPentagonIsomersOnly true if only fullerenes with isolated pentagons are require
-	 * TODO : Determine return type
+	 * @param isolatedPentagonIsomersOnly <code>true</code> if only 
+	 * 	fullerenes with isolated pentagons are required
+	 * @return All isomers matching the input parameters
 	 */
-	SortedSet<FullereneIsomer> generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly);
+	SortedSet<FullereneIsomer> generateIsomers(int nuclearity, 
+			boolean isolatedPentagonIsomersOnly);
 
 }
