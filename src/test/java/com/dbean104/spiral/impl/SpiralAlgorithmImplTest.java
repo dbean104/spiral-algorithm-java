@@ -13,38 +13,34 @@ public class SpiralAlgorithmImplTest {
 
 	@Test
 	public void testMostBasic() {
-		final int nuclearity = 20;
-		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, false);
-		Assert.assertEquals(1, isomers.size());
-		OutputUtils.dumpResult(nuclearity, isomers);
+		test(20, false, 1, false);
 	}
 	
 	@Test
 	public void testNonTrivial() {
-		final int nuclearity = 24;
-		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, false);
-		Assert.assertEquals(1, isomers.size());
-		OutputUtils.dumpResult(nuclearity, isomers);
+		test(24, false, 1, true);
 	}
 	
 	@Test
 	public void testMoreThanOneFound() {
-		final int nuclearity = 32;
-		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, false);
-//		Assert.assertEquals(2, isomers.size());
-		OutputUtils.dumpResult(nuclearity, isomers);
+		test(32, false, -1, false);
 	}
 	
 	@Test
 	public void testIcosohedralC60() {
-		final int nuclearity = 60;
+		test(60, true, 1, false);
+
+	}
+	
+	private static void test(int nuclearity, boolean isIsolatedPentagons, int expectedIsomerNumber, boolean dumpResult) {
 		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
-		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, true);
-		Assert.assertEquals(1, isomers.size());
-		OutputUtils.dumpResult(nuclearity, isomers);
+		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, isIsolatedPentagons);
+		if (expectedIsomerNumber > 0) {
+			Assert.assertEquals(expectedIsomerNumber, isomers.size());
+		}
+		if (dumpResult) {
+			OutputUtils.dumpResult(nuclearity, isIsolatedPentagons, isomers);
+		}
 	}
 	
 	
