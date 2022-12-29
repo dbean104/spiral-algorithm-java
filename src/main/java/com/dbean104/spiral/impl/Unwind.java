@@ -1,6 +1,5 @@
 package com.dbean104.spiral.impl;
 
-import java.util.Arrays;
 import java.util.function.BiFunction;
 
 public class Unwind {
@@ -14,85 +13,86 @@ public class Unwind {
 		final int[][] fp = new int[totalFaces][120];
 		int s0 = 0;
 
-		final int[] p = new int[totalFaces];
-		final int[] r = new int[totalFaces];
 		face1: for (int if1 = 0; if1 < totalFaces; if1++) {
+			final int[] p = new int[totalFaces];
 			p[0] = if1;
-			int flag1 = 0;
-			if (spiral[p[0]] != spiral[0]) {
-				if (!spiral[p[0]]) {
-					continue face1;
-				}
-				flag1 = 1;
+			int flag1 = updateFlag(spiral, p, 0, 0);
+			if (flag1 == -1) {
+				continue face1;
 			}
+			
 			face2: for (int if2 = 0; if2 < totalFaces; if2++) {
 				if (!adj.apply(if1, if2)) {
 					continue face2;
 				}
 				p[1] = if2;
-				int flag2 = flag1;
-				if (flag2 == 0 && spiral[p[1]] != spiral[1]) {
-					if (!spiral[p[1]]) {
-						continue face2;
-					}
-					flag2 = 2;
+				int flag2 = updateFlag(spiral, p, 1, flag1);
+				if (flag2 == -1) {
+					continue face2;
 				}
+
 				face3: for (int if3 = 0; if3 < totalFaces; if3++) {
 					if (!adj.apply(if1,if3) || !adj.apply(if2,if3)) {
 						continue face3;
 					}
 					
 					if (s0 == 0) {
+						assert(if1 == 0 && if2 == 1 && if3 == 2);
+						// this is the original spiral at this point
+						// so store the identity operation...
 						s0 = 1;
 						updateSymmetry(fp, s0, null);
+						// ... and move on 
 						continue face3;
 					}
 					
 					p[2] = if3;
-					int flag3 = flag2;
-					if (flag3 == 0 && spiral[p[2]] != spiral[2]) {
-						if (!spiral[p[2]]) {
-							continue face3;
-						}
-						flag3 = 3;
+					int flag3 = updateFlag(spiral, p, 2, flag2);
+					if (flag3 == -1) {
+						continue face3;
 					}
-					Arrays.fill(r, 0); // TODO : Check if this needs to be called
+					final int[] r = new int[totalFaces];
 					r[p[0]] = 2;
 					r[p[1]] = 2;
 					r[p[2]] = 2;
 					int i = 0;
-					for (int j = 3; j < totalFaces; j++) {
+					level6 : for (int j = 3; j < totalFaces; j++) {
 						while (r[p[i]] == GraphUtils.boolToHexOrPent(spiral[p[i]])) {
 							i++;
-							if (i == j-2)
-								continue face3;
+							if (i == j-1) {
+								// spiral will not wind as no open faces
+								continue face3;								
+							}
 						}
 						int firstOpenFace = p[i];
 						int lastOpenFace = p[j-1];
 						level5: for (int ij = 0; ij < totalFaces; ij++) {
-							if (!adj.apply(ij, firstOpenFace) || !adj.apply(ij,lastOpenFace)
+							if ((!adj.apply(ij, firstOpenFace) || !adj.apply(ij, lastOpenFace))
 									|| r[ij] > 0) {
 								continue level5;
 							}
 							p[j] = ij;
-							if (flag3 == 0 && spiral[p[j]] != spiral[j]) {
-								if (!spiral[p[j]]) {
-									continue face3;
-								}
-								flag3 = j;
+							flag3 = updateFlag(spiral, p, j, flag3);
+							if (flag3 == -1) {
+								continue face3;
 							}
-							for (int k = 0; k < j-2; k++) {
+							for (int k = 0; k < j; k++) {
 								if (adj.apply(p[j],p[k])) {
 									r[p[j]]++;
 									r[p[k]]++;
 								}
 							}
+							continue level6;
 						}
+						// if we get here then we haven't found the next face for our spiral, so find a new starting point
+						continue face3;
 					}
 					if (flag3 == 0) {
+						// the new spiral p is equivalent to our starting spiral
 						s0++;
 						updateSymmetry(fp, s0, p);
 					} else {
+						// the new spiral p has a lower lexicographical value than our starting spiral
 						return null;
 					}
 				}
@@ -219,6 +219,23 @@ public class Unwind {
 	private static void updateSymmetry(int[][] fp, int s0, int[] updateArray) {
 		for (int i = 0; i < fp.length; i++) {
 			fp[i][s0-1] = updateArray != null ? updateArray[i] : i;
+		}
+	}
+	
+	private static int updateFlag(boolean[] spiral, int[] p, int index, int flagValue) {
+		if (flagValue == 0 && spiral[p[index]] != spiral[index]) {
+			if (!spiral[p[index]]) {
+				// the new spiral has a hexagon in this position and therefore, assuming all previous positions
+				// have been checked, this spiral has a higher lexicographical id, so no need to consider it further
+				return -1;
+			} else {
+				// the spiral is different but has a lower lexicographical id, so flag it
+				return index + 1;
+			}
+		} else {
+			// either the flag is already non-zero or this part of the spiral is identical,
+			// so just return the original value
+			return flagValue;
 		}
 	}
 	
