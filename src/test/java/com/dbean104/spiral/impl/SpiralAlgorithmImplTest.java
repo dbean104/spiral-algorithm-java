@@ -23,7 +23,7 @@ public class SpiralAlgorithmImplTest {
 	
 	@Test
 	public void testMoreThanOneFound() {
-		test(32, false, -1, true);
+		test(32, false, 6, true);
 	}
 	
 	@Test

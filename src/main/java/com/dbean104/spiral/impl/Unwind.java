@@ -1,5 +1,6 @@
 package com.dbean104.spiral.impl;
 
+import java.util.Arrays;
 import java.util.function.BiFunction;
 
 public class Unwind {
@@ -10,7 +11,7 @@ public class Unwind {
 			throw new IllegalArgumentException("Inconsistent dimensions between spiral and adjacency matrix");
 		}
 		final BiFunction<Integer, Integer, Boolean> adj = (i1, i2) -> dualAdjacencyMatrix[i1][i2];
-		final int[][] fp = new int[totalFaces][120];
+		final int[][] facePermutations = getPermutationArray(totalFaces);
 		int s0 = 0;
 
 		face1: for (int if1 = 0; if1 < totalFaces; if1++) {
@@ -41,7 +42,7 @@ public class Unwind {
 						// this is the original spiral at this point
 						// so store the identity operation...
 						s0 = 1;
-						updateSymmetry(fp, s0, null);
+						updateSymmetry(facePermutations, s0, null);
 						// ... and move on 
 						continue face3;
 					}
@@ -90,7 +91,7 @@ public class Unwind {
 					if (flag3 == 0) {
 						// the new spiral p is equivalent to our starting spiral
 						s0++;
-						updateSymmetry(fp, s0, p);
+						updateSymmetry(facePermutations, s0, p);
 					} else {
 						// the new spiral p has a lower lexicographical value than our starting spiral
 						return null;
@@ -98,8 +99,10 @@ public class Unwind {
 				}
 			}
 		}
+		
+		// Now determine the point group and NMR of the good spiral
+		
 		final int order = s0;
-		// TODO : Determine point group and NMR
 		final int nuclearity = GraphUtils.getNuclearity(totalFaces);
 		final int totalEdges = nuclearity * 3 / 2;
 		int[][] v = new int[3][nuclearity];
@@ -123,12 +126,17 @@ public class Unwind {
 				}
 			}
 		}
-		int[][] vertexPermutations = new int[nuclearity][120];
+		
+		assert(n == nuclearity && l == totalEdges);
+		
+		int[][] vertexPermutations = getPermutationArray(nuclearity);
+		int[][] edgePermutations = getPermutationArray(totalEdges);
+		
 		for (int orderIdx = 0; orderIdx < order; orderIdx++) {
 			j_loop: for (int j = 0; j < n; j++) {
-				int j1 = fp[v[0][j]][orderIdx];
-				int j2 = fp[v[1][j]][orderIdx];
-				int j3 = fp[v[2][j]][orderIdx];
+				int j1 = facePermutations[v[0][j]][orderIdx];
+				int j2 = facePermutations[v[1][j]][orderIdx];
+				int j3 = facePermutations[v[2][j]][orderIdx];
 				int i1 = Math.min(j1, Math.min(j2, j3));
 				int i3 = Math.max(j1, Math.max(j2, j3));
 				int i2 = j1 + j2 + j3 - i1 - i3;
@@ -139,70 +147,36 @@ public class Unwind {
 					}
 				}
 			}
-		}
-		int[][] edgePermutations = new int[totalEdges][120];
-		int[] mv = new int[12];
-		int[] me = new int[12];
-		int[] mf = new int[12];
-		int[] ms = new int[12];
-		for (int j = 0; j < n; j++) {
-			if (vertexPermutations[j][0] != 0) {
-				vertexPermutations[j][0] = 0;
-				int k = 1;
-				for (int orderIdx = 1; orderIdx < order; orderIdx++) {
-					int i = vertexPermutations[j][orderIdx];
-					if (vertexPermutations[i][0] != 0) {
-						vertexPermutations[i][0] = 0;
-						k++;
+			j_loop: for (int j = 0; j < l; j++) {
+				int j1 = facePermutations[e[0][j]][orderIdx];
+				int j2 = facePermutations[e[1][j]][orderIdx];
+				int i1 = Math.min(j1, j2);
+				int i2 = j1 + j2 - i1;
+				for (int i = 0; i < l; i++) {
+					if (e[0][i] == i1 && e[1][i] == i2) {
+						edgePermutations[j][orderIdx] = i;
+						continue j_loop;
 					}
 				}
-				k = order / k;
-				mv[k-1]++;
 			}
 		}
-		for (int j = 0; j < n; j++) {
-			vertexPermutations[j][0] = j;
-		}
-		for (int j = 0; j < l; j++) {
-			if (edgePermutations[j][0] != 0) {
-				edgePermutations[j][0] = 0;
-				int k = 1;
-				for (int orderIdx = 1; orderIdx < order; orderIdx++) {
-					int i = edgePermutations[j][orderIdx];
-					if (edgePermutations[i][0] != 0) {
-						edgePermutations[i][0] = 0;
-						k++;
-					}
-				}
-				k = order / k;
-				me[k-1]++;
-			}
-		}
-		for (int j = 0; j < l; j++) {
-			edgePermutations[0][j] = j;
-		}
-		for (int j = 0; j < totalFaces; j++) {
-			if (fp[j][0] != 0) {
-				fp[j][0] = 0;
-				int k = 1;
-				for (int orderIdx = 1; orderIdx < order; orderIdx++ ) {
-					int i = fp[j][orderIdx];
-					if (fp[i][0] != 0) {
-						fp[i][0] = 0;
-						k++;
-					}
-				}
-				k = order / k;
-				mf[k-1]++;
-			}
-		}
-		for (int j = 0; j < totalFaces; j++) {
-			fp[0][j] = 0;
-		}
+		
+		// Count vertex orbits with each site group order
+		final int[] mv = populateSymmetryCounts(vertexPermutations, order);
+		
+		// Count edge orbits with each site group order
+		final int[] me = populateSymmetryCounts(edgePermutations, order);
+		
+		// Count face orbits with each site group order
+		final int[] mf = populateSymmetryCounts(facePermutations, order);
+		
+		// Count ALL special point orbits with each site group order
+		final int[] ms = new int[12];
 		for (int k = 0; k < 12; k++) {
 			ms[k] = mv[k] + me[k] + mf[k];
 		}
-		int[] nmr = new int[6];
+		
+		final int[] nmr = new int[6];
 		int j = 0;
 		for (int k = nmr.length - 1; k >= 0; k--) {
 			if (mv[k] != 0) {
@@ -226,10 +200,10 @@ public class Unwind {
 		if (flagValue == 0 && spiral[p[index]] != spiral[index]) {
 			if (!spiral[p[index]]) {
 				// the new spiral has a hexagon in this position and therefore, assuming all previous positions
-				// have been checked, this spiral has a higher lexicographical id, so no need to consider it further
+				// have been checked, this spiral has a higher lexicographical id than the original
 				return -1;
 			} else {
-				// the spiral is different but has a lower lexicographical id, so flag it
+				// the spiral is different but has a lower lexicographical id than the original, so flag it
 				return index + 1;
 			}
 		} else {
@@ -239,5 +213,32 @@ public class Unwind {
 		}
 	}
 	
+	private static int[] populateSymmetryCounts(int[][] permutations, int order) {
+		final int[] countArray = new int[12];
+		for (int j = 0; j < permutations.length; j++) {
+			if (permutations[j][0] != -1) {
+				permutations[j][0] = -1;
+				int k = 1;
+				for (int orderIdx = 1; orderIdx < order; orderIdx++ ) {
+					int i = permutations[j][orderIdx];
+					if (permutations[i][0] != -1) {
+						permutations[i][0] = -1;
+						k++;
+					}
+				}
+				k = order / k;
+				countArray[k-1]++;
+			}
+		}
+		return countArray;
+	}
+	
+	private static int[][] getPermutationArray(int elementCount) {
+		final int[][] a = new int[elementCount][120];
+		for (int i = 0; i < a.length; i++) {
+			Arrays.fill(a[i], -1);
+		}
+		return a;
+	}
 
 }

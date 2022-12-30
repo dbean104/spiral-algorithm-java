@@ -21,7 +21,13 @@ public class UnwindTest {
 	}
 	
 	@Test
-	public void testUnwind() {
+	public void testUnwindWithHighSymmetryC32Isomer() {
+		final int[] pentagonPositions = new int[] {1,2,3,5,7,9,10,12,14,16,17,18};
+		testUnwind(pentagonPositions, 32, false, "D3");
+	}
+	
+	@Test
+	public void testUnwindWithNotLowestC32Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,7,10,12,13,15,16,17,18};
 		testUnwind(pentagonPositions, 32, false, null);
 	}
