@@ -5,6 +5,19 @@ import java.util.function.BiFunction;
 
 public class Unwind {
 
+	/**
+	 * <p>This function unwinds a fullerene dual adjacency matrix into each of its constituent spirals
+	 * and checks that none has a lexicographically smaller code than the input spiral provided</p>
+	 * 
+	 * <p>If this test is passed, the function goes on to calculate the idealized point group and NMR signature
+	 * or the fullerence</p>
+	 * 
+	 * @param spiral A <code>boolean</code> array representing the test fullerene. The values should be <code>true</code> to represent pentagons,
+	 * 		and <code>false</code> to represent hexagons at each index.
+	 * @param dualAdjacencyMatrix an adjacency matrix where value <i>i</i>,<i>j</i> is <code>true</code> iff face <i>i</i> and face <i>j</i> are adjacent
+	 *  in the fullerene provided
+	 * @return an {@link UnwindResult} if this spiral provided has the smallest lexicographical code, or <code>null</code> otherwise 
+	 */
 	public static UnwindResult unwind(boolean[] spiral, boolean[][] dualAdjacencyMatrix) {
 		int totalFaces = spiral.length;
 		if (dualAdjacencyMatrix.length != totalFaces && dualAdjacencyMatrix[0].length != totalFaces) {
@@ -176,6 +189,19 @@ public class Unwind {
 			ms[k] = mv[k] + me[k] + mf[k];
 		}
 		
+		final int[] nmr = calculateNMR(order, mv);
+		
+		String group = PointGroup.getGroup(order, ms);
+		return new UnwindResult(group, nmr);
+	}
+
+	private static void updateSymmetry(int[][] fp, int s0, int[] updateArray) {
+		for (int i = 0; i < fp.length; i++) {
+			fp[i][s0-1] = updateArray != null ? updateArray[i] : i;
+		}
+	}
+	
+	private static int[] calculateNMR(int order, int[] mv) {
 		final int[] nmr = new int[6];
 		int j = 0;
 		for (int k = nmr.length - 1; k >= 0; k--) {
@@ -186,16 +212,20 @@ public class Unwind {
 				j++;
 			}
 		}
-		String group = PointGroup.getGroup(order, ms);
-		return new UnwindResult(group);
+		return nmr;
 	}
 	
-	private static void updateSymmetry(int[][] fp, int s0, int[] updateArray) {
-		for (int i = 0; i < fp.length; i++) {
-			fp[i][s0-1] = updateArray != null ? updateArray[i] : i;
-		}
-	}
-	
+	/**
+	 * <p>Utility function to check how a position on a new spiral compares to that of the reference spiral</p>
+	 * 
+	 * <p>This function is expected to be called consecutively for each face along the spiral</p>
+	 * 
+	 * @param spiral the reference spiral
+	 * @param p an integer array representing a permutation of the reference spiral 
+	 * @param index the index to check
+	 * @param flagValue the current flag value
+	 * @return A new flag value, or -1 if the new spiral is lexicographically larger than the reference spiral (and can therefore be ignored)
+	 */
 	private static int updateFlag(boolean[] spiral, int[] p, int index, int flagValue) {
 		if (flagValue == 0 && spiral[p[index]] != spiral[index]) {
 			if (!spiral[p[index]]) {
@@ -213,6 +243,12 @@ public class Unwind {
 		}
 	}
 	
+	/**
+	 * Function for counting the number of orbits from the permutations provided
+	 * @param permutations an integer array of permutations with values of -1 signifying no permutation
+	 * @param order the order of the fullerene used to specify how much of the permutation array will be used
+	 * @return a integer array with the orbit counts for each site group order
+	 */
 	private static int[] populateSymmetryCounts(int[][] permutations, int order) {
 		final int[] countArray = new int[12];
 		for (int j = 0; j < permutations.length; j++) {
@@ -233,6 +269,11 @@ public class Unwind {
 		return countArray;
 	}
 	
+	/**
+	 * Provides an array to record permutations with all values preset to -1
+	 * @param elementCount the number of elements (i.e., vertices, edges, faces) to record
+	 * @return an 2-dimensional integer array of size <i>elementCount</i> x 120 with all values set to -1
+	 */
 	private static int[][] getPermutationArray(int elementCount) {
 		final int[][] a = new int[elementCount][120];
 		for (int i = 0; i < a.length; i++) {

@@ -2,7 +2,14 @@ package com.dbean104.spiral.impl;
 
 import java.util.Arrays;
 
+/**
+ * Utility class for determining the point group of a fullerene isomer
+ * @author david
+ *
+ */
 public class PointGroup {
+	
+	private PointGroup() { /* Avoid instantiation */ }
 
 	/**
 	 * Calculates the point group

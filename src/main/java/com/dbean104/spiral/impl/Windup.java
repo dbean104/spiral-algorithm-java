@@ -4,7 +4,14 @@ import static com.dbean104.spiral.impl.GraphUtils.PENTAGON_COUNT;
 import static com.dbean104.spiral.impl.GraphUtils.boolToHexOrPent;
 import static com.dbean104.spiral.impl.GraphUtils.pentTo1;
 
+/**
+ * A utility class providing a function to windup a candidate fullerene spiral
+ * @author david
+ *
+ */
 public class Windup {
+	
+	private Windup() { /*  Prevent instantiation */ }
 
 	/**
 	 * Attempts to wind up an input spiral into a fullerene dual (face) adjacency matrix.
@@ -15,10 +22,9 @@ public class Windup {
 	 * 
 	 * @param spiral A <code>boolean</code> array representing the test fullerene. The values should be <code>true</code> to represent pentagons,
 	 * 		and <code>false</code> to represent hexagons at each index.
-	 * @param m
-	 * @param isolatedPentagonIsomersOnly
+	 * @param isolatedPentagonIsomersOnly This should be <code>true</code> if only isolated pentagon isomers are required. The windup mechanism will then stop if adjacent pentagons are found.
 	 * @param dualAdjacencyMatrix an adjacency matrix which will be populated if the fullerene provided is valid
-	 * @return
+	 * @return a value greater than zero if the spiral fails, or zero if the spiral represents a valid fullerene
 	 */
 	public static int windup(boolean[] spiral, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacencyMatrix) {
 		final int m = spiral.length; // the number of faces in the fullerene
