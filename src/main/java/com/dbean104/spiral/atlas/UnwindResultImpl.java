@@ -1,25 +1,27 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
+
+import com.dbean104.spiral.UnwindResult;
 
 /**
  * An object to return the result of a successful call to the {@link Unwind#unwind(boolean[], boolean[][]) function
  * @author david
  *
  */
-public class UnwindResult {
+public class UnwindResultImpl implements UnwindResult {
 
 	private final String pointGroup;
 	private final int[] nmr;
 	
-	UnwindResult(String pointGroup, int[] nmr) {
+	UnwindResultImpl(String pointGroup, int[] nmr) {
 		this.pointGroup = pointGroup;
 		this.nmr = nmr;
 	}
 	
-	String getPointGroup() {
+	public String getPointGroup() {
 		return pointGroup;
 	}
 	
-	int[] getNMR() {
+	public int[] getNMR() {
 		return nmr;
 	}
 

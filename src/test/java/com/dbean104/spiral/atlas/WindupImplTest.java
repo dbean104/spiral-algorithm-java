@@ -1,11 +1,13 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
-import static com.dbean104.spiral.impl.TestUtils.indexFrom1ArrayToSpiral;
+import static com.dbean104.spiral.util.TestUtils.indexFrom1ArrayToSpiral;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class WindupTest {
+import com.dbean104.spiral.util.GraphUtils;
+
+public class WindupImplTest {
 
 	/**
 	 * This test checks that a valid C24, 14-face fullerene with non-isolated pentagons will be validated by the wind-up algorithm
@@ -16,7 +18,7 @@ public class WindupTest {
 		boolean[] spiral = indexFrom1ArrayToSpiral(array, GraphUtils.getFaceCount(24));
 		final boolean isIsolatedPentagons = false;
 		final boolean[][] dualAdjacencyMatrix = new boolean[spiral.length][spiral.length];
-		final int result = Windup.windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
+		final int result = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
 		Assert.assertEquals(0, result);
 		// test some of the adjacency matrix
 		// each face should be connected to the correct number of other faces
@@ -43,7 +45,7 @@ public class WindupTest {
 		int[] array = new int[] {1,7,9,11,13,15,18,20,22,24,26,32};
 		boolean[] spiral = indexFrom1ArrayToSpiral(array, GraphUtils.getFaceCount(60));
 		final boolean isIsolatedPentagons = true;
-		final int result = Windup.windup(spiral, isIsolatedPentagons, new boolean[spiral.length][spiral.length]);
+		final int result = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, new boolean[spiral.length][spiral.length]);
 		Assert.assertEquals(0, result);
 	}
 	

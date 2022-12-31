@@ -1,4 +1,4 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.util;
 
 public class TestUtils {
 

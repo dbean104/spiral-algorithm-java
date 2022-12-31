@@ -1,24 +1,33 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
-public class Unwind {
+import com.dbean104.spiral.UnwindResult;
+import com.dbean104.spiral.Unwinder;
+import com.dbean104.spiral.util.GraphUtils;
+
+/**
+ * A Java implementation of the FORTRAN UNWIND subroutine for the spiral algorithm in "An Atlas of Fullerenes"
+ * @author david
+ *
+ */
+public class UnwindImpl implements Unwinder {
+	
+	private static final Unwinder INSTANCE = new UnwindImpl();
+	
+	private UnwindImpl() { /* Make singleton */ }
 
 	/**
-	 * <p>This function unwinds a fullerene dual adjacency matrix into each of its constituent spirals
-	 * and checks that none has a lexicographically smaller code than the input spiral provided</p>
-	 * 
-	 * <p>If this test is passed, the function goes on to calculate the idealized point group and NMR signature
-	 * or the fullerence</p>
-	 * 
-	 * @param spiral A <code>boolean</code> array representing the test fullerene. The values should be <code>true</code> to represent pentagons,
-	 * 		and <code>false</code> to represent hexagons at each index.
-	 * @param dualAdjacencyMatrix an adjacency matrix where value <i>i</i>,<i>j</i> is <code>true</code> iff face <i>i</i> and face <i>j</i> are adjacent
-	 *  in the fullerene provided
-	 * @return an {@link UnwindResult} if this spiral provided has the smallest lexicographical code, or <code>null</code> otherwise 
+	 * Returns a singleton instance of this class
+	 * @return a singleton
 	 */
-	public static UnwindResult unwind(boolean[] spiral, boolean[][] dualAdjacencyMatrix) {
+	public static Unwinder getInstance() {
+		return INSTANCE;
+	}
+	
+	@Override
+	public UnwindResult unwind(boolean[] spiral, boolean[][] dualAdjacencyMatrix) {
 		int totalFaces = spiral.length;
 		if (dualAdjacencyMatrix.length != totalFaces && dualAdjacencyMatrix[0].length != totalFaces) {
 			throw new IllegalArgumentException("Inconsistent dimensions between spiral and adjacency matrix");
@@ -192,7 +201,7 @@ public class Unwind {
 		final int[] nmr = calculateNMR(order, mv);
 		
 		String group = PointGroup.getGroup(order, ms);
-		return new UnwindResult(group, nmr);
+		return new UnwindResultImpl(group, nmr);
 	}
 
 	private static void updateSymmetry(int[][] fp, int s0, int[] updateArray) {

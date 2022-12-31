@@ -1,4 +1,4 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
 import java.util.SortedSet;
 
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import com.dbean104.spiral.FullereneIsomer;
 import com.dbean104.spiral.SpiralAlgorithm;
-import com.dbean104.spiral.output.OutputUtils;
+import com.dbean104.spiral.output.atlas.IsomerOutputWriterImpl;
 
 public class SpiralAlgorithmImplTest {
 
@@ -43,13 +43,13 @@ public class SpiralAlgorithmImplTest {
 	}
 	
 	private static void test(int nuclearity, boolean isIsolatedPentagons, int expectedIsomerNumber, boolean dumpResult) {
-		final SpiralAlgorithm spa = new SpiralAlgorithmImpl();
+		final SpiralAlgorithm spa = SpiralAlgorithmImpl.getDefaultInstance();
 		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, isIsolatedPentagons);
 		if (expectedIsomerNumber > 0) {
 			Assert.assertEquals(expectedIsomerNumber, isomers.size());
 		}
 		if (dumpResult) {
-			OutputUtils.dumpResult(nuclearity, isIsolatedPentagons, isomers);
+			new IsomerOutputWriterImpl(System.out).dumpResult(nuclearity, isIsolatedPentagons, isomers);
 		}
 	}
 	

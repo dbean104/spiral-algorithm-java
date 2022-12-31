@@ -1,32 +1,28 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
-import static com.dbean104.spiral.impl.GraphUtils.PENTAGON_COUNT;
-import static com.dbean104.spiral.impl.GraphUtils.boolToHexOrPent;
-import static com.dbean104.spiral.impl.GraphUtils.pentTo1;
+import static com.dbean104.spiral.util.GraphUtils.PENTAGON_COUNT;
+import static com.dbean104.spiral.util.GraphUtils.boolToHexOrPent;
+import static com.dbean104.spiral.util.GraphUtils.pentTo1;
+
+import com.dbean104.spiral.Winder;
 
 /**
- * A utility class providing a function to windup a candidate fullerene spiral
+ * A Java implementation of the FORTRAN WINDUP subroutine for the spiral algorithm in "An Atlas of Fullerenes"
  * @author david
  *
  */
-public class Windup {
+public class WindupImpl implements Winder {
 	
-	private Windup() { /*  Prevent instantiation */ }
-
-	/**
-	 * Attempts to wind up an input spiral into a fullerene dual (face) adjacency matrix.
-	 * 
-	 * It returns a value <i>p</i> if the spiral shorts or is discovered to be open-ended after <i>p</i> pentagons have been added.
-	 * 
-	 * Otherwise returns 0.
-	 * 
-	 * @param spiral A <code>boolean</code> array representing the test fullerene. The values should be <code>true</code> to represent pentagons,
-	 * 		and <code>false</code> to represent hexagons at each index.
-	 * @param isolatedPentagonIsomersOnly This should be <code>true</code> if only isolated pentagon isomers are required. The windup mechanism will then stop if adjacent pentagons are found.
-	 * @param dualAdjacencyMatrix an adjacency matrix which will be populated if the fullerene provided is valid
-	 * @return a value greater than zero if the spiral fails, or zero if the spiral represents a valid fullerene
-	 */
-	public static int windup(boolean[] spiral, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacencyMatrix) {
+	private static final Winder INSTANCE = new WindupImpl();
+	
+	private WindupImpl() { /* Make singleton */ }
+	
+	public static Winder getInstance() {
+		return INSTANCE;
+	}
+	
+	@Override
+	public int windup(boolean[] spiral, boolean isolatedPentagonIsomersOnly, boolean[][] dualAdjacencyMatrix) {
 		final int m = spiral.length; // the number of faces in the fullerene
 		if (dualAdjacencyMatrix.length != m || dualAdjacencyMatrix[0].length != m)
 			throw new IllegalStateException("Adjacency matrix must have dimensions equal to nuclearity");

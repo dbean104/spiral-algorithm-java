@@ -1,4 +1,4 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.util;
 
 /**
  * Class containing utility methods and constants

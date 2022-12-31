@@ -1,12 +1,15 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
-import static com.dbean104.spiral.impl.TestUtils.indexFrom1ArrayToSpiral;
+import static com.dbean104.spiral.util.TestUtils.indexFrom1ArrayToSpiral;
 
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.dbean104.spiral.UnwindResult;
+import com.dbean104.spiral.util.GraphUtils;
 
-public class UnwindTest {
+
+public class UnwindImplTest {
 
 	@Test
 	public void testUnwindWithMostBasic() {
@@ -42,11 +45,11 @@ public class UnwindTest {
 		boolean[] spiral = indexFrom1ArrayToSpiral(pentagonPositions, GraphUtils.getFaceCount(nuclearity));
 		// call windup to get the dual adjacency matrix first and assert that the test has been configured with a valid fullerence
 		final boolean[][] dualAdjacencyMatrix = new boolean[spiral.length][spiral.length];
-		final int windup = Windup.windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
+		final int windup = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
 		Assert.assertEquals(0, windup);
 		
 		
-		final UnwindResult unwindResult = Unwind.unwind(spiral, dualAdjacencyMatrix);
+		final UnwindResult unwindResult = UnwindImpl.getInstance().unwind(spiral, dualAdjacencyMatrix);
 		if (expectedPointGroup == null) {
 			Assert.assertNull(unwindResult);
 		} else {

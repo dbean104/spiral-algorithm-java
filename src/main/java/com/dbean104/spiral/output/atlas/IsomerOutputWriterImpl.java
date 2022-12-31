@@ -1,14 +1,35 @@
-package com.dbean104.spiral.output;
+package com.dbean104.spiral.output.atlas;
 
+import java.io.PrintStream;
 import java.util.SortedSet;
 
 import com.dbean104.spiral.FullereneIsomer;
+import com.dbean104.spiral.output.IsomerOutputWriter;
 
-public class OutputUtils {
+/**
+ * Implementation of {@link IsomerOutputWriter} that writes the output in the same format as the "An Atlas of Fullerenes" spiral algorithm
+ * @author david
+ *
+ */
+public class IsomerOutputWriterImpl implements IsomerOutputWriter {
 	
 	private static final String OUTPUT_TEMPLATE = "%s %s %s  %s";
+	
+	private final PrintStream ps;
+	
+	/**
+	 * <p>Default constructor requiring a {@link PrintStream}</p>
+	 * 
+	 * <p>The calling class is responsible for the lifecycle of this stream, including closing it</p>
+	 * 
+	 * @param outputStream a {@link PrintStream}
+	 */
+	public IsomerOutputWriterImpl(PrintStream outputStream) {
+		this.ps = outputStream;
+	}
 
-	public static void dumpResult(int nuclearity, boolean isIsolatedPentagon, SortedSet<FullereneIsomer> isomers) {
+	@Override
+	public void dumpResult(int nuclearity, boolean isIsolatedPentagon, SortedSet<FullereneIsomer> isomers) {
 		final StringBuilder header = new StringBuilder();
 		if (isIsolatedPentagon) {
 			header.append("ISOLATED-PENTAGON");
@@ -16,7 +37,7 @@ public class OutputUtils {
 			header.append("GENERAL FULLERENE");
 		}
 		header.append(" ISOMERS OF C").append(nuclearity).append(":");
-		System.out.println(header.toString());
+		ps.println(header.toString());
 		printSeparator();
 		int i = 1;
 		for (FullereneIsomer isomer : isomers) {
@@ -26,9 +47,9 @@ public class OutputUtils {
 		printSeparator();
 	}
 	
-	private static void dumpFullereneResult(int isomerNumber, FullereneIsomer isomer) {
+	private void dumpFullereneResult(int isomerNumber, FullereneIsomer isomer) {
 		final String output = String.format(OUTPUT_TEMPLATE, String.format("%8d", isomerNumber), String.format("%3s", isomer.getPointGroup()), formatRingSpiral(isomer.getRingSpiral()), formatNMR(isomer.getNMR()));
-		System.out.println(output);
+		ps.println(output);
 	}
 	
 	private static String formatRingSpiral(int[] s) {
@@ -52,11 +73,11 @@ public class OutputUtils {
 		return sb.toString();
 	}
 	
-	private static void printSeparator() {
+	private void printSeparator() {
 		final StringBuilder separator = new StringBuilder();
 		for (int i = 0; i < 77; i++) {
 			separator.append("-");
 		}
-		System.out.println(separator.toString());
+		ps.println(separator.toString());
 	}
 }

@@ -1,7 +1,6 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
-import static com.dbean104.spiral.impl.GraphUtils.getNuclearity;
-import static com.dbean104.spiral.impl.Windup.windup;
+import static com.dbean104.spiral.util.GraphUtils.getNuclearity;
 
 import java.util.Arrays;
 import java.util.SortedSet;
@@ -12,9 +11,17 @@ import org.apache.logging.log4j.Logger;
 
 import com.dbean104.spiral.FullereneIsomer;
 import com.dbean104.spiral.SpiralAlgorithm;
+import com.dbean104.spiral.UnwindResult;
+import com.dbean104.spiral.Unwinder;
+import com.dbean104.spiral.Winder;
+import com.dbean104.spiral.impl.FullereneIsomerImpl;
+import com.dbean104.spiral.util.GraphUtils;
 
 /**
- * The default implementation of the spiral algorithm code
+ * <p>A Java implementation of the FORTRAN SPIRAL program from "An Atlas of Fullerenes"</p>
+ * 
+ * <p>This implementation uses recursion rather than the nested do-loops of the original</p>
+ * 
  * @author david
  *
  */
@@ -22,6 +29,23 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 	
 	private static final Logger LOGGER = LogManager.getLogger(SpiralAlgorithmImpl.class);
 	
+	private final Winder winder;
+	private final Unwinder unwinder;
+	
+	private static final SpiralAlgorithm INSTANCE = new SpiralAlgorithmImpl(WindupImpl.getInstance(), UnwindImpl.getInstance());
+	
+	private SpiralAlgorithmImpl(Winder winder, Unwinder unwinder) {
+		this.winder = winder;
+		this.unwinder = unwinder;
+	}
+	
+	/**
+	 * Returns a singleton instance of this class with the default implementations of {@link Winder} and {@link Unwinder}
+	 * @return a singleton
+	 */
+	public static SpiralAlgorithm getDefaultInstance() {
+		return INSTANCE;
+	}
 
 	@Override
 	public SortedSet<FullereneIsomer> generateIsomers(int nuclearity, boolean isolatedPentagonIsomersOnly) {
@@ -51,12 +75,12 @@ public class SpiralAlgorithmImpl implements SpiralAlgorithm {
 			// call windup to determine if the candidate spiral does close into a fullerene
 			// and populate the adjacency matrix if it does
 			boolean[][] adjacencyMatrix = new boolean[totalFaces][totalFaces];
-			int windup = windup(s, jpr == 2, adjacencyMatrix);
+			int windup = winder.windup(s, jpr == 2, adjacencyMatrix);
 			
 			if (windup == 0) {
 				// the spiral is a fullerene
 				// now call unwind to determine if this spiral is the lexicographical lowest for this isomer
-				final UnwindResult unwind = Unwind.unwind(s, adjacencyMatrix);
+				final UnwindResult unwind = unwinder.unwind(s, adjacencyMatrix);
 				if (unwind != null) {
 					// this copy is necessary because this array will get changed once this method returns
 					int[] pentagonPositionsCopy = Arrays.copyOf(pentagonPositions, pentagonPositions.length);

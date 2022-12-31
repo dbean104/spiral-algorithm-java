@@ -1,4 +1,4 @@
-package com.dbean104.spiral.impl;
+package com.dbean104.spiral.atlas;
 
 import org.junit.Assert;
 import org.junit.Test;
