@@ -1,4 +1,4 @@
-#spiral-algorithm-java
+# spiral-algorithm-java
 
 ### Background
 The spiral algorithm is a method for determining the number of isomers of [fullerenes](https://en.wikipedia.org/wiki/Fullerene) with a given number of carbon atoms (the nuclearity)
