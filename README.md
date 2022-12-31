@@ -3,7 +3,7 @@
 ### Background
 The spiral algorithm is a method for determining the number of isomers of [fullerenes](https://en.wikipedia.org/wiki/Fullerene) with a given number of carbon atoms (the nuclearity)
 
-A full explanation of the spiral algorithm, how it works, and its limitations, is given in the book *An Atlas of Fullerenes* by P.W. Fowler and D. E. Manolopoulos.
+A full explanation of the spiral algorithm, how it works, and its limitations, is given in the book *An Atlas of Fullerenes* by P. W. Fowler and D. E. Manolopoulos.
 
 The book is available to buy [here](https://store.doverpublications.com/0486453626.html).
 
