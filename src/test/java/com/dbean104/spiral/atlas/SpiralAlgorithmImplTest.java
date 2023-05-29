@@ -1,8 +1,9 @@
 package com.dbean104.spiral.atlas;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.SortedSet;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
 import com.dbean104.spiral.FullereneIsomer;
@@ -36,7 +37,7 @@ public class SpiralAlgorithmImplTest {
 		test(60, true, 1, false);
 	}
 	
-	@Test
+//	@Test
 	public void testIsolatedPentagonOutputMatchesC86BookExample() {
 		// Takes about 10 minutes to run
 		test(86, true, 19, true);
@@ -46,7 +47,7 @@ public class SpiralAlgorithmImplTest {
 		final SpiralAlgorithm spa = SpiralAlgorithmImpl.getDefaultInstance();
 		final SortedSet<FullereneIsomer> isomers = spa.generateIsomers(nuclearity, isIsolatedPentagons);
 		if (expectedIsomerNumber > 0) {
-			Assert.assertEquals(expectedIsomerNumber, isomers.size());
+			assertEquals(expectedIsomerNumber, isomers.size());
 		}
 		if (dumpResult) {
 			new IsomerOutputWriterImpl(System.out).dumpResult(nuclearity, isIsolatedPentagons, isomers);

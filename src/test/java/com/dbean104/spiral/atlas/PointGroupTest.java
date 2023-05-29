@@ -1,12 +1,14 @@
 package com.dbean104.spiral.atlas;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PointGroupTest {
+import org.junit.jupiter.api.Test;
+
+
+class PointGroupTest {
 
 	@Test
-	public void test() {
+	void test() {
 		test("C1", 1, null);
 		test("Ci", 2, getMS(0,0));
 		test("C2", 2, getMS(1,2));
@@ -37,11 +39,11 @@ public class PointGroupTest {
 		test("Ih", 120, null);
 	}
 	
-	private void test(String expectedPointGroup, int order, int[] ms) {
-		Assert.assertEquals(expectedPointGroup, PointGroup.getGroup(order, ms));
+	private static void test(String expectedPointGroup, int order, int[] ms) {
+		assertEquals(expectedPointGroup, PointGroup.getGroup(order, ms));
 	}
 	
-	private int[] getMS(int ... mappings) {
+	private static int[] getMS(int ... mappings) {
 		final int[] ms = new int[12];
 		for (int i = 0; i < mappings.length; i += 2)
 		ms[mappings[i]] = mappings[i+1];

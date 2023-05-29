@@ -1,13 +1,14 @@
 package com.dbean104.spiral.atlas;
 
 import static com.dbean104.spiral.util.TestUtils.indexFrom1ArrayToSpiral;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.dbean104.spiral.UnwindResult;
 import com.dbean104.spiral.util.GraphUtils;
-
 
 public class UnwindImplTest {
 
@@ -46,15 +47,15 @@ public class UnwindImplTest {
 		// call windup to get the dual adjacency matrix first and assert that the test has been configured with a valid fullerence
 		final boolean[][] dualAdjacencyMatrix = new boolean[spiral.length][spiral.length];
 		final int windup = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
-		Assert.assertEquals(0, windup);
+		assertEquals(0, windup);
 		
 		
 		final UnwindResult unwindResult = UnwindImpl.getInstance().unwind(spiral, dualAdjacencyMatrix);
 		if (expectedPointGroup == null) {
-			Assert.assertNull(unwindResult);
+			assertNull(unwindResult);
 		} else {
-			Assert.assertNotNull(unwindResult);
-			Assert.assertEquals(expectedPointGroup, unwindResult.getPointGroup());			
+			assertNotNull(unwindResult);
+			assertEquals(expectedPointGroup, unwindResult.getPointGroup());			
 		}
 	}
 }

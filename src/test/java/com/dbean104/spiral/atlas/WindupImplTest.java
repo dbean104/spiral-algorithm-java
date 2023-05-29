@@ -1,9 +1,11 @@
 package com.dbean104.spiral.atlas;
 
 import static com.dbean104.spiral.util.TestUtils.indexFrom1ArrayToSpiral;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.dbean104.spiral.util.GraphUtils;
 
@@ -19,7 +21,7 @@ public class WindupImplTest {
 		final boolean isIsolatedPentagons = false;
 		final boolean[][] dualAdjacencyMatrix = new boolean[spiral.length][spiral.length];
 		final int result = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, dualAdjacencyMatrix);
-		Assert.assertEquals(0, result);
+		assertEquals(0, result);
 		// test some of the adjacency matrix
 		// each face should be connected to the correct number of other faces
 		for (int i = 0; i < spiral.length; i++) {
@@ -29,7 +31,7 @@ public class WindupImplTest {
 				if (b)
 					adjacencyCount++;
 			}
-			Assert.assertEquals("Failure in face " + i, GraphUtils.boolToHexOrPent(spiral[i]), adjacencyCount);
+			assertEquals(GraphUtils.boolToHexOrPent(spiral[i]), adjacencyCount, "Failure in face " + i);
 		}
 		// the central pentagon should be attached to the surrounding atoms
 		testAdjacencyMatrixRow(0, dualAdjacencyMatrix[0], new int[] {1,2,3,4,5});
@@ -46,17 +48,17 @@ public class WindupImplTest {
 		boolean[] spiral = indexFrom1ArrayToSpiral(array, GraphUtils.getFaceCount(60));
 		final boolean isIsolatedPentagons = true;
 		final int result = WindupImpl.getInstance().windup(spiral, isIsolatedPentagons, new boolean[spiral.length][spiral.length]);
-		Assert.assertEquals(0, result);
+		assertEquals(0, result);
 	}
 	
 	private void testAdjacencyMatrixRow(int rowNumber, boolean[] row, int[] expectedMatches) {
 		int matchIdx = 0;
 		for (int i = 0; i < row.length; i++) {
 			if (matchIdx < expectedMatches.length && expectedMatches[matchIdx] == i) {
-				Assert.assertTrue("Error on row " + rowNumber + " expected match " + i, row[i]);
+				assertTrue(row[i], "Error on row " + rowNumber + " expected match " + i);
 				matchIdx++;
 			} else {
-				Assert.assertFalse("Error on row " + rowNumber + " didn't expect match " + i, row[i]);
+				assertFalse(row[i], "Error on row " + rowNumber + " didn't expect match " + i);
 			}
 		}
 	}
