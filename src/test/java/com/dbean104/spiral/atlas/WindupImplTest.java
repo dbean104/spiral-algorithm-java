@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 
 import com.dbean104.spiral.util.GraphUtils;
 
-public class WindupImplTest {
+class WindupImplTest {
 
 	/**
 	 * This test checks that a valid C24, 14-face fullerene with non-isolated pentagons will be validated by the wind-up algorithm
 	 */
 	@Test
-	public void testWindupWithAdjacentPentagons() {
+	void testWindupWithAdjacentPentagons() {
 		int[] array = new int[] {1,2,3,4,5,7,8,10,11,12,13,14};
 		boolean[] spiral = indexFrom1ArrayToSpiral(array, GraphUtils.getFaceCount(24));
 		final boolean isIsolatedPentagons = false;
@@ -43,7 +43,7 @@ public class WindupImplTest {
 	 * This test checks that the C60 icosahedral fullerene with isolated pentagons will be validated by the wind-up algorithm
 	 */
 	@Test
-	public void testWindupWithNonAdjacentPentagons() {
+	void testWindupWithNonAdjacentPentagons() {
 		int[] array = new int[] {1,7,9,11,13,15,18,20,22,24,26,32};
 		boolean[] spiral = indexFrom1ArrayToSpiral(array, GraphUtils.getFaceCount(60));
 		final boolean isIsolatedPentagons = true;

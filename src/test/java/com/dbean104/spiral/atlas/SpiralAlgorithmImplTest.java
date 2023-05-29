@@ -10,35 +10,35 @@ import com.dbean104.spiral.FullereneIsomer;
 import com.dbean104.spiral.SpiralAlgorithm;
 import com.dbean104.spiral.output.atlas.IsomerOutputWriterImpl;
 
-public class SpiralAlgorithmImplTest {
+class SpiralAlgorithmImplTest {
 
 	@Test
-	public void testMostBasic() {
+	void testMostBasic() {
 		test(20, false, 1, false);
 	}
 	
 	@Test
-	public void testNonTrivial() {
+	void testNonTrivial() {
 		test(24, false, 1, false);
 	}
 	
 	@Test
-	public void testMoreThanOneFound() {
+	void testMoreThanOneFound() {
 		test(32, false, 6, false);
 	}
 	
 	@Test
-	public void testOutputMatchesC36BookExample() {
+	void testOutputMatchesC36BookExample() {
 		test(36, false, 15, true);
 	}
 	
 	@Test
-	public void testIcosohedralC60() {
+	void testIcosohedralC60() {
 		test(60, true, 1, false);
 	}
 	
 //	@Test
-	public void testIsolatedPentagonOutputMatchesC86BookExample() {
+	void testIsolatedPentagonOutputMatchesC86BookExample() {
 		// Takes about 10 minutes to run
 		test(86, true, 19, true);
 	}

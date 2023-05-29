@@ -10,34 +10,34 @@ import org.junit.jupiter.api.Test;
 import com.dbean104.spiral.UnwindResult;
 import com.dbean104.spiral.util.GraphUtils;
 
-public class UnwindImplTest {
+class UnwindImplTest {
 
 	@Test
-	public void testUnwindWithMostBasic() {
+	void testUnwindWithMostBasic() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,5,6,7,8,9,10,11,12};
 		testUnwind(pentagonPositions, 20, false, "Ih");
 	}
 	
 	@Test
-	public void testUnwindWithLowestC24Isomer() {
+	void testUnwindWithLowestC24Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,5,7,8,10,11,12,13,14};
 		testUnwind(pentagonPositions, 24, false, "D6d");
 	}
 	
 	@Test
-	public void testUnwindWithHighSymmetryC32Isomer() {
+	void testUnwindWithHighSymmetryC32Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,5,7,9,10,12,14,16,17,18};
 		testUnwind(pentagonPositions, 32, false, "D3");
 	}
 	
 	@Test
-	public void testUnwindWithNotLowestC32Isomer() {
+	void testUnwindWithNotLowestC32Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,7,10,12,13,15,16,17,18};
 		testUnwind(pentagonPositions, 32, false, null);
 	}
 	
 	@Test
-	public void testUnwindWithNotLowestC24Isomer() {
+	void testUnwindWithNotLowestC24Isomer() {
 		final int[] pentagonPositions = new int[] {1,2,3,4,6,7,9,10,11,12,13,14};
 		testUnwind(pentagonPositions, 24, false, null);
 	}
