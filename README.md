@@ -11,7 +11,7 @@ The authors include a FORTRAN implementation of the spiral algorithm in the appe
 
 ### Project Structure
 
-The code ported from Fortran is located in the *com.dbean104.spiral.atlas* package. This code has been re-factored to (hopefully) make it clearer, reduce duplication and make it easier to test. I have also use recursion to iterate through the candidate fullerene spirals, whereas the original FORTRAN code uses 12 nested do-loops.
+The code ported from Fortran is located in the *com.dbean104.spiral.atlas* package. This code has been re-factored to (hopefully) make it clearer, reduce duplication and make it easier to test. I have also used recursion to iterate through the candidate fullerene spirals, whereas the original FORTRAN code uses 12 nested do-loops.
 
 Other packages include interfaces, utility classes and functionality for formatting the output.
 
